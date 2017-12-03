@@ -1,0 +1,21 @@
+{
+  "name": "Tab tools",
+  "short_name": "tt",
+  "version": "0.2",
+  "description": "Chrome Browser Tab tools",
+  "sandbox": {
+     "pages": ["sandbox.html"]
+  },
+  "web_accessible_resources": [ "token.html", "js/TrelloOnload.js", "js/jquery.min.js" ],
+  "browser_action": {
+    "default_icon": "static/clock.png",
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": "script-src 'self' https://api.trello.com/ https://code.angularjs.org/ https://cdn.jsdelivr.net/ https://cdnjs.cloudflare.com/ https://ajax.googleapis.com/ HTTPS://apis.google.com/ https://ajax.googleapis.com/ https://code.jquery.com/ https://cdnjs.cloudflare.com/; object-src 'self' ",
+  "manifest_version": 2,
+  "permissions": [
+    "activeTab", "history", "identity",
+    "tabs","notifications","bookmarks",
+    "http://*/","https://*/"
+  ]
+}

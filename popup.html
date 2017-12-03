@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html> <head>
+    <title>Recently Typed URLs</title>
+    <base target="_blank">
+    <style> body { width: 760px; background: #e5e5e5 } </style>
+<!--     <style> div { display:block } </style> -->
+    <style> .highlight { font: bold } </style>
+    <style> .trim-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } </style>
+    <style> .iframe-class {min-height:588px; width: 150px; } </style>
+    <style> .cards{ min-height:100%;float: left;
+      overflow-x: hidden;} </style>
+    <style> .url{ color:#396939; font-size:10px; white-space: nowrap;} </style>
+    <style> .cross{ color:gray; display:inline-block; padding-left: 8px;} </style>
+    <style> .wStar{ color:gray; display:inline-block; padding-right: 8px; font-size:15px} </style>
+    <style> .fStar{ color:blue; display:inline-block; padding-right: 8px; font-size:15px;text-decoration:none} </style>
+    <style> .dcTab{ cursor:pointer; color:darkgreen ;text-decoration: underline} </style>
+    <style> .ccTab{ cursor:default; font-size:14px; max-width: 700px} </style>
+    <style> .hlTab{ background: lightblue} </style>
+    <style> .dcList{ background: lightblue} </style>
+    <style> .dcHead { height: 30px; color: #212121; font-size: 13px; display: table-cell; vertical-align: bottom;}</style>
+    <style> .ccTab:hover{ background: lightgray} </style>
+    <style> .dcTab:hover{ background: lightgray} </style>
+    <style> .cross:hover{ color:white} </style>
+    <style> .fStar:hover{ color:white} </style>
+</head>
+<body>
+<div style='height:98%'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.4.3/showdown.min.js"></script>
+<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/0.7.1/lunr.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="js/elasticlunr.min.js"></script>
+    <script src="js/TrelloOpts.js" key="654f1af34d6fd053c6e2cc378993941f"></script>
+    <script src="js/Trello.js"></script>
+
+<div style='float: left;
+    width: 77%;
+    max-height: 588px;
+    overflow-x: hidden;'>
+    <div id="ccList"> </div>
+    <div id="dcHead" class="dcHead"> Discarded tab(s)</div>
+    <div id="dcList"> </div>
+    <a id="testBut" href="#" hidden>test</a>
+    <div id="loggedin" hidden>
+        Logged in to as <span id="fullName"></span>
+        <a id="disconnect" href="#">Log Out</a>
+    </div>
+</div>
+<div style='
+    float: right;
+    width: 23%;
+    min-height: 588px;
+    overflow: hidden;'>
+    <iframe id="sandbox" src="sandbox.html" style='
+    overflow-y:script;
+    overflow-x:hidden;
+    width: 100%;
+    min-height: inherit;' frameborder="0" id="sandbox" sandbox='allow-same-origin allow-scripts'></iframe>
+</div>
+</div>
+<!--     <script src="js/tfidf.js"></script> -->
+    <script src="popup.js"></script>
+
+
+    <!-- <div><a href='chrome://flags/#automatic-tab-discarding'>chrome://flags/#automatic-tab-discarding</a></div>
+    <div><a href='http://www.ust.hk'>chrome://flags/#automatic-tab-discarding</a></div> -->
+
+</body>
+</html>

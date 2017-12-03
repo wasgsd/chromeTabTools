@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular2 playground</title>
+    <style> body { background: #e5e5e5;margin:0px } </style>
+    <style> .trim-taext {white-space: nowrap;overflow: hidden;text-overflow: ellipsis} </style>
+
+    <style> .rPad {display:inline-block;padding:4px;margin-right:3px;margin-bottom:5px;border-radius:3px;font-weight:bold;cursor:pointer} </style>
+    <style> .board{ background-color:#0079BF;color:white} </style>
+    <style> .list{ background-color:#E2E4E6;color:black} </style>
+    <style> .card{ background-color:white;color:black} </style>
+    <style> .board:hover{ opacity:0.8} </style>
+    <style> .list:hover{ background-color:lightgray} </style>
+<!--     <style> .list:hover .board{ opacity:0} </style> -->
+    <style> .card:hover{ opacity:0.6} </style>
+<!--     <style> .cards{ min-height:100%;float: left;} </style>     -->
+</head>
+<body>
+    <div id='boardTmpl' hidden >{{#each boards}}
+        <div class='board rPad' style='background-color:{{prefs.backgroundColor}}'
+        id='{{id}}' title='{{name}}'>{{name}}<div id='listsTmpl' class='lists'>{{boardSelected}}{{#each lists}}<div class='list rPad'
+        id='{{id}}' title='{{name}}'>{{name}}<div id='cardsTmpl' class='cards'>{{listSelected}}{{#cards}}<div class='card rPad trim-text'
+        id='{{id}}' title='{{name}}'>{{name}}</div>{{/cards}}</div>
+        </div>{{/each}}</div>
+        </div>{{/each}}</div>
+
+
+    <div id='cards' style='background-color:#E2E4E6'></div>
+    <div id='boards'></div>
+    <div id='cardTmpl' hidden>  <div class='card rPad trim-text'
+         id='{{id}}' title='{{name}}' style='border:2px solid {{backgroundColor}}'>
+            {{name}}<div class='cardDesc' style='font-weight: normal'>{{descHTML}}</div> </div> </div>
+    <!-- <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script> -->
+    <script src="js/jquery.min.js"></script>
+<!--     <script src="traceur-runtime.js"></script> -->
+    <script src="js/handlebars.js"></script>
+    <script src="js/lunr.js"></script>
+<!--     <script src="system.js"></script> -->
+<!--     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="http://cdn.rawgit.com/google/traceur-compiler/90da568c7aa8e53ea362db1fc211fbb4f65b5e94/bin/traceur-runtime.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/systemjs/0.18.4/system.js"></script> -->
+<!--     <script src="config.js"></script> -->
+    <!-- Angular2 import -->
+<!--     <script src="http://code.angularjs.org/2.0.0-alpha.36/angular2.dev.js"></script>
+    <script src="http://code.angularjs.org/2.0.0-alpha.36/router.dev.js"></script>
+    <!-- <script src="http://code.angularjs.org/2.0.0-alpha.36/core.dev.js"></script> -->
+    <script>
+    var dt = {}
+    var boardID=''
+    var listID=''
+    Array.prototype.toDict = function(key) {
+      var dict, j, len, obj;
+      dict = {};
+      for (j = 0, len = this.length; j < len; j++) {
+        obj = this[j];
+        if (obj[key] != null) {
+          dict[obj[key]] = obj;
+        }
+      }
+      return dict;
+    };
+    //bootstrap the Angular2 application
+    $(window).on('message', function(e) {
+        d = e.originalEvent.data;
+        if (d.hasOwnProperty('lists') && dt.boards!=null) {
+            dt.boards[d.id].lists = d.lists;
+            dt.boards[d.id].cards = d.cards;
+            dt.cards = dt.cards.concat(d.cards);
+            return;
+        }
+        if (d.rc!=null)
+            return $.each(d.rc, function(i, card) {
+              $('#cards').append(
+                Handlebars.compile( $('#cardTmpl').html(), { noEscape:true } )
+                (card) );
+              });
+        
+
+        dt = d;
+//         d.boards =d.boards.sort( function(a,b)
+//             {return new Date(b.dateLastView) - new Date(a.dateLastView);})
+//         $.each(d.boards, function(i, item){
+//             if(!dict[item.name])
+//                 dict[item.name] = [];
+//             dict[item.name]= item;
+//             });
+//         d.boards = dict;
+        $('#boards').html( Handlebars.compile($('#boardTmpl').html())
+            (e.originalEvent.data) ).show();
+        $('.board').click( function(e) {
+            //hide boards
+            boardID = e.target.id
+            // TODO FIXME collapse boards if target not in boards
+            dt.boards[boardID].boardSelected = e.target.innerText
+            //show list under selected board
+            if (e.target.childNodes.length>3)   // expanded
+                return;
+            $('#'+boardID).html( Handlebars.compile($('#listsTmpl').html())
+                (dt.boards[e.target.id]) ).show();
+
+            $('.list').click( function(e) {
+                if (e.target.className.match('^list') ) {
+                    //hide boards
+                    //show list under selected board
+                    listID = e.target.id
+                    if (e.target.childNodes.length>3)   // expanded
+                        return;
+                    $('#'+listID).html( Handlebars.compile($('#cardsTmpl').html())
+                            ( dt.boards[boardID].lists[listID] =
+                                {listSelected: dt.boards[boardID].lists[listID].name,
+                                    cards: $.grep(dt.boards[boardID].cards, function(c)
+                                        {return c.idList == listID })
+                                    } ) ).show();
+                } else {
+                    card = dt.cards.toDict('id')[e.target.id];
+                    card.backgroundColor = dt.boards[boardID].prefs.backgroundColor
+                    td = Handlebars.compile( $('#cardTmpl').html(), { noEscape:true } )
+                        (card);
+                    //td.id = e.target.id;
+                    $('#cards').prepend(td ).show();
+                    parent.postMessage(card,'*');
+                }
+                e.stopPropagation();
+            })
+        });
+     });
+    // System.import('app').catch(console.log.bind(console));
+
+    // $.receiveMessage( function(d) {
+    //     $('#output').append( Handlebars.compile($('#boards').HTML())(d));
+    // })
+    ng2pp = {
+        code: 'sandbox',
+    };
+    </script>
+</body>
+
+</html>
